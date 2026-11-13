@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.spring.spring_rest.entity.StudentErrorResponse;
 import com.spring.spring_rest.exception.StudentNotFoundException;
@@ -43,8 +44,9 @@ public class StudentExceptionHandler {
      * @param ex the exception thrown
      * @return a response containing error details with HTTP 400 status
      */
-    @ExceptionHandler
-    public ResponseEntity<StudentErrorResponse> handleException(Exception ex) {
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<StudentErrorResponse> handleInvalidInteger(
+            MethodArgumentTypeMismatchException ex) {
 
         StudentErrorResponse err = new StudentErrorResponse();
 
@@ -52,7 +54,10 @@ public class StudentExceptionHandler {
         err.setMessage("Invalid data. Only Integers are accepted");
         err.setTimeStamp(System.currentTimeMillis());
 
-        return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(
+                err,
+                HttpStatus.BAD_REQUEST
+        );
     }
 
     /**
